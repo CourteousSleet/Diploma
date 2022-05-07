@@ -1,8 +1,8 @@
 package HydroPowerPlant
   
   extends Icons.MainPicture;
-  
-    //within HydroPowerPlant;
+  //within HydroPowerPlant;
+
   package Icons "Subfolder to store all images of the main simulation systems."
     package MainPicture "HydroPowerPlant Logo"
       annotation(
@@ -21,13 +21,11 @@ package HydroPowerPlant
   
     connector WaterInput
       input Modelica.SIunits.Pressure p "Contact pressure";
-      input Modelica.SIunits.Temperature T "Contact temperature";
       input Modelica.SIunits.MassFlowRate m_dot "Mass flow rate through the contact";
     end WaterInput;
   
     connector WaterOutput
       output Modelica.SIunits.Pressure p "Contact pressure";
-      output Modelica.SIunits.Temperature T "Contact temperature";
       output Modelica.SIunits.MassFlowRate m_dot "Mass flow rate through the contact";
     end WaterOutput;
   
@@ -60,49 +58,151 @@ package HydroPowerPlant
 
   end Presets;
 
-  package WaterSources
-    model River
-        parameter Modelica.SIunits.Height H_r = 50;         //"Initial water level above intake"
-        parameter Modelica.SIunits.Length L = 500;         //"Length of the reservoir"
-        parameter Modelica.SIunits.Length w = 100;         //"Bed width of the reservoir"
-        parameter Modelica.SIunits.Conversions.NonSIunits.Angle_deg alpha = 30;         //"The angle of the reservoir walls (zero angle corresponds to vertical walls)"
-        parameter Real f = 0.0008;         //"Friction factor of the reservoir"
-        parameter Modelica.SIunits.Temperature T_i = Const.T_i;         //"Initial temperature of the water"
-        Modelica.SIunits.Area A;         //"Vertical cros section";
-        Modelica.SIunits.Mass m;         //"Water mass";
-        Modelica.SIunits.MassFlowRate m_dot;         //"Water mass flow rate";
-        Modelica.SIunits.VolumeFlowRate V_o_dot "Outlet flow rate", V_i_dot "Inlet flow rate", V_dot "Vertical flow rate";
-        Modelica.SIunits.Velocity v;         //"Water velocity";
-        Modelica.SIunits.Momentum M;         //"Water momentum";
-        Modelica.SIunits.Force F_f;         //"Friction force";
-        Modelica.SIunits.Height H;         //"Water height";
-        Modelica.SIunits.Pressure p_2;         //"Outside pressure";
-        OpenHPL.Interfaces.Contact n(p=p_2);     //"Outflow from reservoir"
-      equation
-    // Define vertiacal cross section of the reservoir
-        A = H * (w + 2 * H * Modelica.Math.tan(Modelica.SIunits.Conversions.from_deg(alpha)));
-    // Define water mass
-        m = Const.rho * A * L;
-    // Define volumetric water flow rate
-        V_dot = V_i_dot - V_o_dot;
-    // Define mass water flow rate
-        m_dot = Const.rho * V_dot;
-    // Define water velocity
-        v = m_dot / Const.rho / A;
-    // Define momentrumn
-        M = L * m_dot;
-    // Define friction term
-        F_f = 1 / 8 * Const.rho * f * L * (w + 2 * H / Modelica.Math.cos(alpha)) * v * abs(v);
-    // define derivatives of momentum and mass
-        der(M) = A * (Const.p_a - p_2) + Const.g * Const.rho * A * H - F_f + Const.rho / A * (V_i_dot ^ 2 - V_o_dot ^ 2);
-        der(m) = m_dot;
-    // define output pressure
-        p_2 = Const.p_a + Const.g * Const.rho * H;
-    // output flow conector
-        n.m_dot = -Const.rho * V_o_dot;
-    // output temperature conector
-        n.T = T_i;
+  package WaterSources   model River
+      parameter Modelica.SIunits.Height H_r = 50;
+      //"Initial water level above intake"
+      parameter Modelica.SIunits.Length L = 500;
+      //"Length of the reservoir"
+      parameter Modelica.SIunits.Length w = 100;
+      //"Bed width of the reservoir"
+      parameter Modelica.SIunits.Conversions.NonSIunits.Angle_deg alpha = 30;
+      //"The angle of the reservoir walls (zero angle corresponds to vertical walls)"
+      parameter Real f = 0.0008;
+      //"Friction factor of the reservoir"
+      parameter Modelica.SIunits.Temperature T_i = Const.T_i;
+      //"Initial temperature of the water"
+      Modelica.SIunits.Area A;
+      //"Vertical cros section";
+      Modelica.SIunits.Mass m;
+      //"Water mass";
+      Modelica.SIunits.MassFlowRate m_dot;
+      //"Water mass flow rate";
+      Modelica.SIunits.VolumeFlowRate V_o_dot "Outlet flow rate", V_i_dot "Inlet flow rate", V_dot "Vertical flow rate";
+      Modelica.SIunits.Velocity v;
+      //"Water velocity";
+      Modelica.SIunits.Momentum M;
+      //"Water momentum";
+      Modelica.SIunits.Force F_f;
+      //"Friction force";
+      Modelica.SIunits.Height H;
+      //"Water height";
+      Modelica.SIunits.Pressure p_2;
+      //"Outside pressure";
+      OpenHPL.Interfaces.Contact n(p = p_2);
+      //"Outflow from reservoir"
+    equation
+// Define vertiacal cross section of the reservoir
+      A = H * (w + 2 * H * Modelica.Math.tan(Modelica.SIunits.Conversions.from_deg(alpha)));
+// Define water mass
+      m = Const.rho * A * L;
+// Define volumetric water flow rate
+      V_dot = V_i_dot - V_o_dot;
+// Define mass water flow rate
+      m_dot = Const.rho * V_dot;
+// Define water velocity
+      v = m_dot / Const.rho / A;
+// Define momentrumn
+      M = L * m_dot;
+// Define friction term
+      F_f = 1 / 8 * Const.rho * f * L * (w + 2 * H / Modelica.Math.cos(alpha)) * v * abs(v);
+// define derivatives of momentum and mass
+      der(M) = A * (Const.p_a - p_2) + Const.g * Const.rho * A * H - F_f + Const.rho / A * (V_i_dot ^ 2 - V_o_dot ^ 2);
+      der(m) = m_dot;
+// define output pressure
+      p_2 = Const.p_a + Const.g * Const.rho * H;
+// output flow conector
+      n.m_dot = -Const.rho * V_o_dot;
+// output temperature conector
+      n.T = T_i;
     end River;
+
+    model Reservoir
+      outer Presets data                                                 "using standard class with constants";
+      
+      // set if water level in the reservoir is constant
+      parameter Boolean control_level = false                            "If checked, the level connector controls the water level of the reservoir"
+        annotation (
+        Dialog(group="Setup", enable = not useInflow),
+        choices(checkBox = true));
+        
+      parameter Boolean useInflow = false                                "If checked, the inflow connector is used"
+      annotation (
+        Dialog(group="Setup", enable = not control_level),
+        choices(checkBox = true));
+        
+      parameter SI.Height H_0=50                                         "Initial water level above intake"
+      annotation (
+                  Dialog(group="Setup",   enable = not control_level));
+        
+      // geometrical parameters in case when the inflow to reservoir is used
+      parameter SI.Length l = 500                                        "Length of the reservoir"
+      annotation (
+        Dialog(group="Geometry"));
+      
+      parameter Modelica.SIunits.Length w = 100                          "Bed width of the reservoir"
+      annotation (
+        Dialog(group = "Geometry"));
+      
+      parameter Modelica.SIunits.Angle alpha = 0                         "The angle of the reservoir walls (zero angle corresponds to vertical walls)"
+      annotation (
+        Dialog(group = "Geometry"));
+      
+      parameter Real f = 0.0008                                          "Friction factor of the reservoir"
+      annotation (
+        Dialog(group = "Geometry"));
+      
+      // conditions of use
+      Modelica.SIunits.Area A                                            "Vertical cross section";
+      Modelica.SIunits.Mass m                                            "Water mass";
+      Modelica.SIunits.MassFlowRate mdot                                 "Water mass flow rate";
+      Modelica.SIunits.VolumeFlowRate Vdot_i                             "Inlet flow rate";
+      Modelica.SIunits.VolumeFlowRate Vdot_o                             "Outlet flow rate";
+      Modelica.SIunits.VolumeFlowRate Vdot                               "Flow rate through the reservoir";
+      Modelica.SIunits.Velocity v                                        "Water velocity";
+      Modelica.SIunits.Momentum M                                        "Water momentum";
+      Modelica.SIunits.Force F_f                                         "Friction force";
+      SI.Height h                                                        "Water level";
+      Modelica.SIunits.Pressure p_o                                      "Outlet pressure";
+    
+      HydroPowerPlant.Connectors.WaterOutput w_o(p = p_o)                "Outflow from reservoir";
+    
+      Modelica.Blocks.Interfaces.RealInput inflow = Vdot_i if useInflow  "Conditional input inflow of the reservoir";
+      
+      Modelica.Blocks.Interfaces.RealInput level=h if control_level      "Conditional input water level of the reservoir";
+    
+    initial equation
+       
+       if not control_level then
+        h = H_0;
+       end if;
+       
+    equation
+      
+      A = h * (w + h * Modelica.Math.tan(alpha))                         "Vertical cross section of the reservoir";
+      m = data.rho * A * l                                               "Water mass in reservoir";
+      Vdot = Vdot_i - Vdot_o                                             "Volumetric water flow rate";
+      mdot = data.rho * Vdot                                             "Water mass flow rate";
+      v = mdot / data.rho / A                                            "Water velocity";
+      M = l * mdot                                                       "Momentum based on the length";
+      
+      F_f = 1 / 8 * data.rho * f *l  * (w + 2 * h  / Modelica.Math.cos(alpha)) * v * abs(v)
+                                                                         "Friction force due to movement along the reservoir length";
+      
+      if control_level then
+        Vdot_i - Vdot_o = 0;
+        p_o = data.p_a + data.g * data.rho * h;
+      elseif useInflow then
+        der(M) = A * (data.p_a - p_o) + data.g * data.rho * A * h - F_f + data.rho / A * (Vdot_i^2 - Vdot_o^2);
+        der(m) = mdot;
+      else
+        Vdot_i = 0;
+        p_o = data.p_a + data.g * data.rho * h;
+        der(m) = mdot;
+      end if;
+    
+       o.mdot = -data.rho * Vdot_o "Output flow connector";
+        
+    end Reservoir;
   end WaterSources;
 
   package Watercourse
@@ -112,7 +212,7 @@ package HydroPowerPlant
       //Modelica.SIunits.Volume available_volume;
       //WaterInput current_income_water;
     equation
-    //watch for filling forebay
+//watch for filling forebay
     end Forebay;
   
     model Tailrace
