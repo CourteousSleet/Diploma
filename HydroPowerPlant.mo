@@ -281,13 +281,16 @@ package HydroPowerPlant
       p_ = p_i + dp:dp:p_i + dp * (N - 1);
     
     equation
+    
       // Pipe flow rate
       mdot_R = i.mdot;
       mdot_V = -o.mdot;
-      // pipe pressure
+      
+      // Pipe pressure
       p_i = i.p;
       p_o = o.p;
-      // momentum balance for the first and last segment
+      
+      // Momentum balance for the first and last segment
       F_m_first = data.rho * A[1] * (1 + data.beta_total * ((p_[1] + p_i) / 2 - data.p_a));
       rho_m_first = data.rho * (1 + data.beta * ((p_[1] + p_i) / 2 - data.p_a));
       A_m_first = F_m_first / rho_m_first;
@@ -296,56 +299,339 @@ package HydroPowerPlant
       rho_m_end = data.rho * (1 + data.beta * ((p_[N - 1] + p_o) / 2 - data.p_a));
       A_m_end = F_m_end / rho_m_end;
       dx * der(mdot_V) = (-A_m_end * (p_o - p_[N - 1])) + F_m_end * data.g * dx * H / L - Functions.DarcyFriction.Friction(v_exp[N], 2 * sqrt(A_m_end / pi), dx, rho_m_end, data.mu, data.p_eps);
-      // mass flow rate vector with all segments
+      
+      // Mass flow rate vector with all segments
       m_exp[1] = mdot_R;
       m_exp[2:N - 1] = mdot[:];
       m_exp[N] = mdot_V;
-      // mass balance for pressure
+      
+      // Mass balance for pressure
       dx * data.rho * A_[2:N] .* data.beta_total .* der(p_) = m_exp[1:N - 1] - m_exp[2:N];
-      // define middle pressures, densities and areas
+      
+      // Define middle pressures, densities and areas
       F_ap = data.rho * A_[2:N] .* (ones(N - 1) + data.beta_total * (p_ - data.p_a * ones(N - 1)));
       F_m = (F_ap[1:N - 2] + F_ap[2:N - 1]) / 2;
       F_exp[1] = data.rho * A_[1] * (1 + data.beta_total * (p_i - data.p_a));
-      //F_m_first;
+      
+      // F_m_first;
       F_exp[2:N - 1] = F_m[:];
       F_exp[N] = data.rho * A_[N + 1] * (1 + data.beta_total * (p_o - data.p_a));
-      //F_m_end;
+      
+      // F_m_end;
       v_exp = m_exp ./ F_exp;
       p_m = (p_[1:N - 2] + p_[2:N - 1]) / 2;
       rho_m = data.rho * (ones(N - 2) + data.beta * (p_m - data.p_a * ones(N - 2)));
       A_m = F_m ./ rho_m;
       Per_m = sqrt(4 * pi * A_m);
-      // gravity and pressure drop forces
+      
+      // Gravity and pressure drop forces
       F_g = dx * data.g * H / L * F_exp[2:N - 1];
       F_p = A_m .* (p_[1:N - 2] - p_[2:N - 1]);
-      // friction and other coefficients
+      
+      // Friction and other coefficients
       for i in 1:N - 2 loop
         p_eps_m[i] = -Functions.DarcyFriction.Friction(v_exp[i + 1], 2 * sqrt(A_m[i] / pi), dx, rho_m[i], data.mu, data.p_eps) / v_exp[i + 1];
         Ap_m[1, i] = -((m_exp[i] - m_exp[i + 2]) / 4 - p_eps_m[i]);
         Ap_m[2, i] = (m_exp[i] + m_exp[i + 1]) / 4;
         Ap_m[3, i] = -(m_exp[i + 1] + m_exp[i + 2]) / 4;
       end for;
-      // momentum balance
+      
+      // Momentum balance
       dx * der(mdot) = Ap_m[1, :] .* v_exp[2:N - 1] + Ap_m[2, :] .* v_exp[1:N - 2] + Ap_m[3, :] .* v_exp[3:N] + F_g + F_p;
-      // volumetric flow rates for all cells
+      
+      // Volumetric flow rates for all cells
       V_p_out = mdot ./ rho_m;
       V_p_out_end = mdot_V / (data.rho * (1 + data.beta * (p_o - data.p_a)));
   
     end Penstock;
   
-    model SurgeChamber
-      // parameter Modelica.SIunits.Volume chamber_volume;
-      // WaterInput from_intake_structure;
-      // WaterOutput to_penstock;
+    model SurgeChamber "Model of the surge chamber/shaft"
+      outer Presets data "Using standard data set";
+      import Modelica.Constants.pi;
+    
+      parameter Types.SurgeTank SurgeTankType = OpenHPL.Types.SurgeTank.STSimple "Types of surge tank" annotation (
+        Dialog(group = "Surge tank types"));
+      // Geometrical parameters of the surge tank
+      parameter Modelica.SIunits.Height H = 120 "Vertical component of the length of the surge shaft" annotation (
+        Dialog(group = "Geometry"));
+      parameter Modelica.SIunits.Length L = 140 "Length of the surge shaft" annotation (
+        Dialog(group = "Geometry"));
+      parameter Modelica.SIunits.Diameter D = 3.4 "Diameter of the surge shaft" annotation (
+        Dialog(group = "Geometry"));
+      parameter Modelica.SIunits.Height p_eps = data.p_eps "Pipe roughness height" annotation (
+        Dialog(group = "Geometry"));
+      parameter Modelica.SIunits.Diameter D_so = 1.7 "If Sharp orifice type: Diameter of sharp orifice" annotation (
+        Dialog(group = "Geometry",enable=SurgeTankType == OpenHPL.Types.SurgeTank.STSharpOrifice));
+      parameter Modelica.SIunits.Diameter D_t = 1.7 "If Throttle value type: Diameter of throat" annotation (
+        Dialog(group = "Geometry",enable=SurgeTankType == OpenHPL.Types.SurgeTank.STThrottleValve));
+      parameter Modelica.SIunits.Diameter L_t = 5 "If Throttle value type: Diameter of throat" annotation (
+        Dialog(group = "Geometry",enable=SurgeTankType == OpenHPL.Types.SurgeTank.STThrottleValve));
+    
+      // Condition for steady state
+      parameter Boolean SteadyState = data.Steady "If true - starts from Steady State" annotation (
+        Dialog(group = "Initialization"));
+      // steady state values for flow rate and water level in surge tank
+      parameter Modelica.SIunits.VolumeFlowRate Vdot_0 = 0 "Initial flow rate in the surge tank" annotation (
+        Dialog(group = "Initialization"));
+      parameter Modelica.SIunits.Height h_0 = 69.9 "Initial water height in the surge tank" annotation (
+        Dialog(group = "Initialization"));
+      parameter Modelica.SIunits.Pressure p_ac = 4*data.p_a "Initial pressure of air-cushion inside the surge tank" annotation (
+        Dialog(group = "Initialization",enable=SurgeTankType == OpenHPL.Types.SurgeTank.STAirCushion));
+      parameter Modelica.SIunits.Temperature T_ac(displayUnit="degC") = 298.15 "Initial air-cushion temperature"
+        annotation (Dialog(group = "Initialization", enable=SurgeTankType == OpenHPL.Types.SurgeTank.STAirCushion));
+      //possible parameters for temperature variation. Not finished...
+      //parameter Boolean TempUse = data.TempUse "If checked - the water temperature is not constant" annotation (Dialog(group = "Initialization"));
+      //parameter Modelica.SIunits.Temperature T_i = data.T_i "Initial water temperature in the pipe" annotation (Dialog(group = "Initialization", enable = TempUse));
+      //// variables
+      Modelica.SIunits.Mass m "Water mass";
+      Modelica.SIunits.Mass m_a = p_ac*A*(L-h_0/cos_theta)*data.M_a/(Modelica.Constants.R*T_ac) "Air mass inside surge tank";
+      Modelica.SIunits.Momentum M "Water momuntum";
+      Modelica.SIunits.Force Mdot "Difference in influent and effulent momentum";
+      Modelica.SIunits.Force F "Total force acting in the surge tank";
+      Modelica.SIunits.Area A = (pi*D ^ 2) / 4 "Cross sectional area of the surge tank";
+      Modelica.SIunits.Area A_t = (pi*D_t ^ 2) / 4 "Cross sectional area of the throttle valve surge tank";
+      Modelica.SIunits.Length l = h / cos_theta "Length of water in the surge tank";
+      Real cos_theta = H / L "Slope ratio";
+      Modelica.SIunits.Velocity v "Water velocity";
+      Modelica.SIunits.Force F_p "Pressure force";
+      Modelica.SIunits.Force F_f "Friction force";
+      Modelica.SIunits.Force F_g "Gravity force";
+      Modelica.SIunits.Pressure p_t "Pressure at top of the surge tank";
+      Modelica.SIunits.Pressure p_b "Pressure at bottom of the surge tank";
+      Real phiSO "Dimensionless factor based on the type of fitting ";
+      // initial values for differential variables
+      Modelica.SIunits.Height h(start = h_0) "Water height in the surge tank";
+      Modelica.SIunits.VolumeFlowRate Vdot(start = Vdot_0) "Water flow rate";
+      // variables for temperature. Not in use for now...
+      // Real W_f, W_e;
+      // connector (acquisition of algebraic variable, mass flow rate mdot, and node pressure (manifold pressure) p_n)
+      extends OpenHPL.Interfaces.ContactNode;
+    initial equation
+      if SteadyState then
+        der(M) = 0;
+        der(m) = 0;
+      else
+        h = h_0;
+      end if;
     equation
-  
+      der(m) = mdot "Mass balance";
+      der(M) = Mdot+F "Momentum balance";
+    
+      if SurgeTankType == OpenHPL.Types.SurgeTank.STSimple then
+        v = Vdot / A;
+        m = data.rho * A * l;
+        M = m * v;
+        p_t = data.p_a;
+        F_f = Functions.DarcyFriction.Friction(v, D, l, data.rho, data.mu, p_eps) + A * phiSO * 0.5 * data.rho * abs(v) * v;
+        phiSO = 0;
+        F_p = (p_b - p_t) * A;
+      elseif SurgeTankType == OpenHPL.Types.SurgeTank.STAirCushion then
+        v = Vdot / A;
+        m = data.rho * A * l + m_a;
+        M = m * v;
+        p_t = p_ac * ((L - h_0 / cos_theta) / (L - l)) ^ data.gamma_air;
+        F_f = Functions.DarcyFriction.Friction(v, D, l, data.rho, data.mu, p_eps) + A * phiSO * 0.5 * data.rho * abs(v) * v;
+        phiSO = 0;
+        F_p = (p_b - p_t) * A;
+      elseif SurgeTankType == OpenHPL.Types.SurgeTank.STSharpOrifice then
+        v = Vdot / A;
+        m = data.rho * A * l;
+        M = m * v;
+        p_t = data.p_a;
+        F_f = Functions.DarcyFriction.Friction(v, D, l, data.rho, data.mu, p_eps) + A * phiSO * 0.5 * data.rho * abs(v) * v;
+        F_p = (p_b - p_t) * A;
+        if v >= 0 then
+          phiSO = Functions.Fitting.FittingPhi(v, D, D_so, L, 90, data.rho, data.mu, data.p_eps, OpenHPL.Types.Fitting.SharpOrifice);
+        else
+          phiSO = Functions.Fitting.FittingPhi(v, D_so, D, L, 90, data.rho, data.mu, data.p_eps, OpenHPL.Types.Fitting.SharpOrifice);
+        end if;
+      elseif SurgeTankType == OpenHPL.Types.SurgeTank.STThrottleValve then
+        if l <= L_t then
+          v = Vdot / A_t;
+          m = data.rho * A_t * l;
+          M = m * v;
+          F_f = Functions.DarcyFriction.Friction(v, D_t, l, data.rho, data.mu, p_eps) + A_t * phiSO * 0.5 * data.rho * abs(v) * v;
+          phiSO = 0;
+          F_p = (p_b - p_t) * A;
+        else
+          v = Vdot * (1 / A_t + 1 / A) / 2;
+          m = data.rho * (A_t * L_t + A * (l - L_t));
+          M = data.rho * (A_t * L_t*Vdot/A_t + A * (l - L_t)*Vdot/A);
+          if v > 0 then
+            F_f = Functions.DarcyFriction.Friction(Vdot/A_t, D_t, L_t, data.rho, data.mu, p_eps) + Functions.DarcyFriction.Friction(Vdot/A, D, l - L_t, data.rho, data.mu, p_eps) + A_t * phiSO * 0.5 * data.rho * abs(Vdot/A_t) * Vdot/A_t;
+            phiSO = Functions.Fitting.FittingPhi(Vdot/A_t, D_t, D, L, 90, data.rho, data.mu, data.p_eps, OpenHPL.Types.Fitting.Square);
+          elseif v < 0 then
+            F_f = Functions.DarcyFriction.Friction(Vdot/A_t, D_t, L_t, data.rho, data.mu, p_eps) + Functions.DarcyFriction.Friction(Vdot/A, D, l - L_t, data.rho, data.mu, p_eps) + A * phiSO * 0.5 * data.rho * abs(Vdot/A) * Vdot/A;
+            phiSO = Functions.Fitting.FittingPhi(Vdot/A, D, D_t, L, 90, data.rho, data.mu, data.p_eps, OpenHPL.Types.Fitting.Square);
+          else
+            F_f = 0;
+            phiSO = 0;
+          end if;
+          F_p = (p_b - (p_t+data.rho*data.g*(l-L_t))) * A_t+(p_t+data.rho*data.g*(l-L_t)-p_t)*A;
+        end if;
+        p_t = data.p_a;
+      end if;
+      mdot = data.rho * Vdot;
+      Mdot = mdot * v;
+      F = F_p - F_f - F_g;
+      p_b = p_n "Linking bottom node pressure to connector";
+      F_g = m * data.g * cos_theta;
+      
     end SurgeChamber;
   
-    model DraftTube
-      // parameter Modelica.SIunits.Area dtube_cross-sectional_area;
-      // WaterInput from_turbine;
-      // WaterOutput to_drop_point;
+    model DraftTube "Model of a draft tube for reaction turbines"
+      outer Presets data "Using standard data set";
+      import Modelica.Constants.pi;
+      parameter Types.DraftTube DraftTubeType = OpenHPL.Types.DraftTube.ConicalDiffuser "Types of draft tube" annotation (
+        Dialog(group = "Draft tube types"));
+    
+      // geometrical parameters of the draft tube
+      parameter Modelica.SIunits.Length H = 7 "Vertical height of conical diffuser" annotation (
+        Dialog(group = "Geometry",enable=DraftTubeType == OpenHPL.Types.DraftTube.ConicalDiffuser));
+      parameter Modelica.SIunits.Length L = 7.017 "Slant height of conical diffuser, for conical diffuser L=H/cos(diffusion_angle/2), diffusion_anlge=8" annotation (
+        Dialog(group = "Geometry",enable=DraftTubeType == OpenHPL.Types.DraftTube.ConicalDiffuser));
+      parameter Modelica.SIunits.Diameter D_i = 4 "Diameter of the inlet side" annotation (
+        Dialog(group = "Geometry"));
+      parameter Modelica.SIunits.Diameter D_o = 4.978 "Diameter of the outlet side, for conical diffuser D_o=D_i+2*H*tan(diffusion_angle/2)" annotation (
+        Dialog(group = "Geometry"));
+    
+      parameter Modelica.SIunits.Length L_m = 4 "Length of Main section of Moody spreading pipe" annotation (
+        Dialog(group = "Geometry",enable=DraftTubeType == OpenHPL.Types.DraftTube.MoodySpreadingPipe));
+      parameter Modelica.SIunits.Length L_b = 3 "Length of Branch section of Moody spreading pipe" annotation (
+        Dialog(group = "Geometry",enable=DraftTubeType == OpenHPL.Types.DraftTube.MoodySpreadingPipe));
+    
+      parameter Modelica.SIunits.Conversions.NonSIunits.Angle_deg theta = 5 "Angle at which conical diffuser is inclined" annotation (
+        Dialog(group = "Geometry",enable=DraftTubeType == OpenHPL.Types.DraftTube.ConicalDiffuser));
+      parameter Modelica.SIunits.Conversions.NonSIunits.Angle_deg theta_moody = 30 "Angle at which Moody spreading pipes are branched possible value is 15,30,45,60 or 90)" annotation (
+        Dialog(group = "Geometry",enable=DraftTubeType == OpenHPL.Types.DraftTube.MoodySpreadingPipe));
+      parameter Modelica.SIunits.Height p_eps = data.p_eps "Pipe roughness height" annotation (
+        Dialog(group = "Geometry"));
+      // condition of steady state
+      parameter Boolean SteadyState = data.Steady "if true - starts from Steady State" annotation (
+        Dialog(group = "Initialization"));
+      // staedy state value for flow rate
+      parameter Modelica.SIunits.VolumeFlowRate Vdot_0 = data.V_0 "Initial flow rate in the pipe" annotation (
+        Dialog(group = "Initialization"));
+      // possible parameters for temperature variation. Not finished...
+      // parameter Boolean TempUse = data.TempUse "If checked - the water temperature is not constant" annotation (Dialog(group = "Initialization"));
+      // parameter Modelica.SIunits.Temperature T_0 = data.T_0 "Initial water temperature in the pipe" annotation (Dialog(group = "Initialization", enable = TempUse));
+      // variables
+      Modelica.SIunits.Diameter D_ = 0.5 * (D_i + D_o) "Average diameter";
+      Modelica.SIunits.Area A_i = D_i ^ 2 * pi / 4 "Inlet cross-section area of draft tube";
+      Modelica.SIunits.Area A_o = D_o ^ 2 * pi / 4 "Outlet cross-section area of draft tube";
+      Modelica.SIunits.Area A_ = D_ ^ 2 * pi / 4 "Average cross-section area of conical diffuser";
+    
+      Modelica.SIunits.Mass m "Mass of water inside conical diffuser";
+      Modelica.SIunits.Mass m_m "Mass of water inside Main section Moody spreading pipes";
+      Modelica.SIunits.Mass m_b "Mass of water inside Branch section Moody spreading pipes";
+    
+      Modelica.SIunits.MassFlowRate mdot_m "Mass flow rate inside Main section of Moody spreading pipes";
+      Modelica.SIunits.MassFlowRate mdot_b "Mass flow rate inside Branch section of Moody spreading pipes";
+    
+      Modelica.SIunits.Volume V "Volume of water inside the draft tube";
+      Modelica.SIunits.Momentum M "Momentum of water inside the draft tube";
+      Modelica.SIunits.Force Mdot "Rate of change of water momentum";
+      Modelica.SIunits.Force F "Total force acting in the tube";
+      Modelica.SIunits.Force F_p "Pressure force";
+      Modelica.SIunits.Force F_f "Fluid frictional force";
+      Modelica.SIunits.Force F_g "Weight of water";
+      Modelica.SIunits.Force F_fm "Fluid frictional force in the Main section of Moody spreading pipe";
+      Modelica.SIunits.Force F_fb "Fluid frictional force in the Branch section of Moody spreading pipe";
+    
+      //Real cos_theta = H / L "slope ratio";
+      Modelica.SIunits.Velocity v "Water velocity for conical diffuser";
+      Modelica.SIunits.Velocity v_m "Water velocity inside Main section of Moody spreading pipes";
+      Modelica.SIunits.Velocity v_b "Water velocity inside Branch section of Moody spreading pipes";
+      Modelica.SIunits.Pressure p_i "Inlet pressure";
+      Modelica.SIunits.Pressure p_o "Outlet pressure";
+      //Modelica.SIunits.Pressure dp = p_o-p_i "Pressure drop in and out of draft tube";
+      Real phi_d "Generalized friction factor for draft tube";
+      Real phi_d_o "Initial generalized friction factor for Moody spreading pipes";
+    
+      Modelica.SIunits.VolumeFlowRate Vdot(start = Vdot_0, fixed = true) "Volumeteric flow rate";
+      Modelica.SIunits.VolumeFlowRate Vdot_b "Volumeteric flow rate for Branch section of Moody spreading pipes";
+    
+      Real cos_theta = Modelica.Math.cos(Modelica.SIunits.Conversions.from_deg(theta))
+                                                                                      "Calculating cos_theta";
+      Real cos_theta_moody = Modelica.Math.cos(Modelica.SIunits.Conversions.from_deg(theta_moody))
+                                                                                                  "Calculating cos_theta_moody";
+    
+    
+      Real cos_theta_moody_by_2 = Modelica.Math.cos(Modelica.SIunits.Conversions.from_deg(theta_moody/2))
+                                                                                                  "Calculating cos_theta_moody_by_2";
+    
+     // connectors
+      extends OpenHPL.Interfaces.ContactPort;
+    initial equation
+      if SteadyState then
+        der(M) = 0;
+        //der(n.T) = 0;
+      else
+        Vdot = Vdot_0;
+        //n.T = p.T;
+      end if;
     equation
+      der(M) = Mdot + F "Momentum balance";
+      if DraftTubeType == OpenHPL.Types.DraftTube.ConicalDiffuser then
+        M = m*v;
+        m = data.rho*V "Mass of water inside the draft tube";
+        m_m=0;m_b=0; // Unimportant for conical diffuser
+        V = pi*H/12*(D_i^2+D_o^2+D_i*D_o) "Volume of water inside the draft tube";
+        v = Vdot/A_;
+        Vdot_b = 0; // Unimportant for conical diffuser
+        v_m=0;v_b=0; // Unimportant for conical diffuser
+    
+        Mdot = mdot*v;
+        mdot = data.rho*Vdot;
+        mdot_m=0; mdot_b=0; // Unimportant for conical diffuser
+    
+        F = F_p-F_g-F_f;
+        F_p = p_i * A_i - p_o * A_o;
+        F_f = Functions.DarcyFriction.Friction(v, D_, L, data.rho, data.mu, p_eps)+1/2*data.rho*v*abs(v)*A_i*phi_d;
+        F_fm=0;F_fb=0;
+        phi_d = 0.23*(1-D_i/D_o)^2;
+        phi_d_o=0; // Unimportant for conical diffuser
+        F_g = m*data.g*cos_theta;
+    
+      elseif DraftTubeType == OpenHPL.Types.DraftTube.MoodySpreadingPipe then
+        // Taking momentum balance only on y-direction
+        M = m_m*v_m+2*m_b*v_b*cos_theta_moody_by_2;
+        m_m=data.rho*A_i*L_m; m_b=data.rho*A_o*L_m;
+        m = m_m+2*m_b;
+        v_m = Vdot/A_i; v_b=A_i/(2*A_o)*v_m; v=v_m;
+        V = A_i*L_m+2*A_o*L_b;
+    
+        Mdot = mdot_m*v_m+2*mdot_b*cos_theta_moody_by_2;
+        mdot_m=data.rho*Vdot; mdot_b=data.rho*Vdot_b; Vdot_b=A_o*v_b;
+        mdot = mdot_m;
+    
+        F = F_p-F_g-F_f;
+        F_p = p_i*A_i-2*p_o*A_o*cos_theta_moody_by_2;
+        F_g = m_m*data.g+2*m_b*data.g*cos_theta_moody_by_2;
+        F_f = F_fm+2*F_fb*cos_theta_moody_by_2+data.rho*v_m*abs(v_m)*A_i*phi_d;
+        F_fm = Functions.DarcyFriction.Friction(v_m, D_i, L_m, data.rho, data.mu, p_eps);
+        F_fb = Functions.DarcyFriction.Friction(v_b, D_o, L_b, data.rho, data.mu, p_eps);
+    
+        // calculating phi_d
+        phi_d = 1+(v_b/v_m)^2-2*v_b/v_m*cos_theta_moody-phi_d_o*(v_b/v_m)^2;
+        // phi_d_o is calculated based on theta_moody
+        if theta_moody == 15 then
+          phi_d_o = 0.04;
+        elseif theta_moody == 30 then
+          phi_d_o = 0.16;
+        elseif theta_moody == 45 then
+          phi_d_o = 0.36;
+        elseif theta_moody == 60 then
+          phi_d_o = 0.64;
+        elseif theta_moody == 90 then
+          phi_d_o = 1;
+        end if;
+    
+      end if;
+      
+      // Connector
+        p_i = i.p;
+        p_o = o.p;
   
     end DraftTube;
   
