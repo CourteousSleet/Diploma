@@ -4,6 +4,9 @@ package HydroPowerPlant
   //within HydroPowerPlant;
 
   package Icons "Subfolder to store all images of the main simulation systems."
+  
+    extends Modelica.Icons.IconsPackage;
+  
     package MainPicture "HydroPowerPlant Logo"
       annotation(
         Icon(graphics = {Ellipse(origin = {-62, 61}, fillPattern = FillPattern.Solid, extent = {{-8, 7}, {8, -7}}), Line(origin = {0, 54}, points = {{-62, 0}, {62, 0}, {62, 0}}), Ellipse(origin = {63, 61}, fillPattern = FillPattern.Solid, extent = {{-7, 7}, {7, -7}}), Line(origin = {1, 68}, points = {{-63, 0}, {63, 0}, {63, 0}}), Line(origin = {-70, 18}, points = {{0, 44}, {0, -44}, {0, -44}}), Line(origin = {70, 17}, points = {{0, 43}, {0, -43}, {0, -43}}), Ellipse(origin = {-62, -23}, fillPattern = FillPattern.Solid, extent = {{-8, -7}, {8, 7}}), Ellipse(origin = {63, -22}, fillPattern = FillPattern.Solid, extent = {{-7, 8}, {7, -8}}), Line(origin = {-54, 15}, points = {{0, -39}, {0, 39}, {0, 39}}), Line(origin = {56, 16}, points = {{0, -38}, {0, 38}, {0, 38}}), Ellipse(origin = {-12, 24}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {12, 24}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-46, 24}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-26, 24}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {26, 24}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {46, 24}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Line(origin = {-36, 28}, points = {{-10, 0}, {10, 0}, {10, 0}}), Line(origin = {0, 28}, points = {{-12, 0}, {12, 0}, {12, 0}}), Line(origin = {36, 28}, points = {{-10, 0}, {10, 0}, {10, 0}}), Line(origin = {-36, 20}, points = {{-10, 0}, {10, 0}, {10, 0}}), Line(origin = {0, 20}, points = {{-12, 0}, {12, 0}, {12, 0}}), Line(origin = {36, 20}, points = {{-10, 0}, {10, 0}, {10, 0}}), Line(origin = {-50, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {-22, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {-16, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {16, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {-42, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {-30, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {-8, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {8, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {23.2071, 3.14645}, points = {{-1.20711, 20.8536}, {-1.20711, -21.1464}, {0.792893, -19.1464}}), Line(origin = {30, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {42, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Line(origin = {50, 3}, points = {{0, 21}, {0, -21}, {0, -21}}), Ellipse(origin = {-46, -18}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-26, -18}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-12, -18}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {12, -18}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {26, -18}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {46, -18}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Line(origin = {0.44, -40}, points = {{-64, -4}, {-55, -20}, {-44, 0}, {-33, -20}, {-20, 0}, {-11, -20}, {1.5, 2}, {12.75, -20}, {24.375, 0}, {35.1875, -18}, {45.5938, -2}, {56.7969, -18}, {66, -6}}, thickness = 3, smooth = Smooth.Bezier), Line(origin = {-1.52875, -58.5938}, points = {{-64, -4}, {-55, -20}, {-44, 0}, {-33, -20}, {-20, 0}, {-11, -20}, {1.5, 2}, {12.75, -20}, {24.375, 0}, {35.1875, -18}, {45.5938, -2}, {56.7969, -18}, {66, -6}}, thickness = 3, smooth = Smooth.Bezier), Line(origin = {-2.84125, -79.3751}, points = {{-64, -4}, {-55, -20}, {-44, 0}, {-33, -20}, {-20, 0}, {-11, -20}, {1.5, 2}, {12.75, -20}, {24.375, 0}, {35.1875, -18}, {45.5938, -2}, {56.7969, -18}, {66, -6}}, thickness = 3, smooth = Smooth.Bezier), Rectangle(origin = {1, 61}, fillPattern = FillPattern.Solid, extent = {{-63, 7}, {63, -7}}), Rectangle(origin = {-62, 19}, fillPattern = FillPattern.Solid, extent = {{-8, 43}, {8, -43}}), Rectangle(origin = {63, 20}, fillPattern = FillPattern.Solid, extent = {{-7, 42}, {7, -42}}), Rectangle(origin = {-46, 3}, fillPattern = FillPattern.Solid, extent = {{-4, 21}, {4, -21}}), Rectangle(origin = {-36, 24}, fillPattern = FillPattern.Solid, extent = {{-10, 4}, {10, -4}}), Rectangle(origin = {-26, 3}, fillPattern = FillPattern.Solid, extent = {{-4, -21}, {4, 21}}), Rectangle(origin = {-12, 3}, fillPattern = FillPattern.Solid, extent = {{-4, 21}, {4, -21}}), Rectangle(origin = {12, 3}, fillPattern = FillPattern.Solid, extent = {{-4, 21}, {4, -21}}), Rectangle(origin = {-1, 24}, fillPattern = FillPattern.Solid, extent = {{-13, 4}, {13, -4}}), Rectangle(origin = {26, 3}, fillPattern = FillPattern.Solid, extent = {{-4, 21}, {4, -21}}), Rectangle(origin = {36, 24}, fillPattern = FillPattern.Solid, extent = {{-10, 4}, {10, -4}}), Rectangle(origin = {46, 3}, fillPattern = FillPattern.Solid, extent = {{4, 21}, {-4, -21}})}));
@@ -12,6 +15,8 @@ package HydroPowerPlant
   end Icons;
 
   package Connectors "This package stores all the connectors needed to connect different classes within a model."
+  
+    extends Modelica.Icons.InterfacesPackage;
   
     connector DynamicInput
     end DynamicInput;
@@ -46,6 +51,9 @@ package HydroPowerPlant
   end Connectors;
 
   record Presets "Stores important common constants for presets within the package."
+  
+    extends Modelica.Icons.Record;
+  
     parameter Modelica.SIunits.Acceleration g             = Modelica.Constants.g_n     "Gravity";
     parameter Modelica.SIunits.Density rho                = 997.0                      "Density";
     parameter Modelica.SIunits.DynamicViscosity mu        = 0.89e-3                    "Dynamic viscosity of water";
@@ -206,36 +214,6 @@ package HydroPowerPlant
 
   package Watercourse
   
-    model Forebay
-      //parameter Modelica.SIunits.Volume absolute_volume = 1;
-      //Modelica.SIunits.Volume available_volume;
-      //WaterInput current_income_water;
-    equation
-//watch for filling forebay
-    end Forebay;
-  
-    model Tailrace
-      //parameter Modelica.Fluid.Sources.Boundary_pT bounds = 1;???
-      //parameter Modelica.Fluid.Pipes.DynamicPipe pipe = 1;??
-      //WaterInput  from_river;
-      //WaterOutput for_forebay;
-    equation
-  
-    end Tailrace;
-  
-    model IntakeStructure
-      // parameter Modelica.SIunits.Volume basin = 1;
-      // parameter Modelica.SIunits.Volume raw_collector = 1;
-      // parameter Modelica.SIunits.Time delta_for_purification = 1; darsi
-      // parameter Modelica.SIunits.Volume tank = 1;
-      // parameter Modelica.Fluid.Machines.PrescribedPump pump = 1;
-      // parameter Modelica.Fluid.Vessels.OpenTank tank_for_pureficated_water = 1;
-      // WaterInput from_river;
-      // WaterOutput to_surge (or to purification station);
-    equation
-  
-    end IntakeStructure;
-  
     model Penstock "Model of the penstock with elastic walls and compressible water. Simple Staggered grid scheme"
       outer Presets data "Using standard data set";
       import Modelica.Constants.pi;
@@ -349,23 +327,15 @@ package HydroPowerPlant
       outer Presets data "Using standard data set";
       import Modelica.Constants.pi;
     
-      parameter Types.SurgeTank SurgeTankType = OpenHPL.Types.SurgeTank.STSimple "Types of surge tank" annotation (
-        Dialog(group = "Surge tank types"));
+      parameter Types.SurgeTank SurgeTankType = OpenHPL.Types.SurgeTank.STSimple "Types of surge tank";
       // Geometrical parameters of the surge tank
-      parameter Modelica.SIunits.Height H = 120 "Vertical component of the length of the surge shaft" annotation (
-        Dialog(group = "Geometry"));
-      parameter Modelica.SIunits.Length L = 140 "Length of the surge shaft" annotation (
-        Dialog(group = "Geometry"));
-      parameter Modelica.SIunits.Diameter D = 3.4 "Diameter of the surge shaft" annotation (
-        Dialog(group = "Geometry"));
-      parameter Modelica.SIunits.Height p_eps = data.p_eps "Pipe roughness height" annotation (
-        Dialog(group = "Geometry"));
-      parameter Modelica.SIunits.Diameter D_so = 1.7 "If Sharp orifice type: Diameter of sharp orifice" annotation (
-        Dialog(group = "Geometry",enable=SurgeTankType == OpenHPL.Types.SurgeTank.STSharpOrifice));
-      parameter Modelica.SIunits.Diameter D_t = 1.7 "If Throttle value type: Diameter of throat" annotation (
-        Dialog(group = "Geometry",enable=SurgeTankType == OpenHPL.Types.SurgeTank.STThrottleValve));
-      parameter Modelica.SIunits.Diameter L_t = 5 "If Throttle value type: Diameter of throat" annotation (
-        Dialog(group = "Geometry",enable=SurgeTankType == OpenHPL.Types.SurgeTank.STThrottleValve));
+      parameter Modelica.SIunits.Height H = 120 "Vertical component of the length of the surge shaft";
+      parameter Modelica.SIunits.Length L = 140 "Length of the surge shaft";
+      parameter Modelica.SIunits.Diameter D = 3.4 "Diameter of the surge shaft";
+      parameter Modelica.SIunits.Height p_eps = data.p_eps "Pipe roughness height";
+      parameter Modelica.SIunits.Diameter D_so = 1.7 "If Sharp orifice type: Diameter of sharp orifice";
+      parameter Modelica.SIunits.Diameter D_t = 1.7 "If Throttle value type: Diameter of throat";
+      parameter Modelica.SIunits.Diameter L_t = 5 "If Throttle value type: Diameter of throat";
     
       // Condition for steady state
       parameter Boolean SteadyState = data.Steady "If true - starts from Steady State" annotation (
@@ -373,16 +343,9 @@ package HydroPowerPlant
       // steady state values for flow rate and water level in surge tank
       parameter Modelica.SIunits.VolumeFlowRate Vdot_0 = 0 "Initial flow rate in the surge tank" annotation (
         Dialog(group = "Initialization"));
-      parameter Modelica.SIunits.Height h_0 = 69.9 "Initial water height in the surge tank" annotation (
-        Dialog(group = "Initialization"));
-      parameter Modelica.SIunits.Pressure p_ac = 4*data.p_a "Initial pressure of air-cushion inside the surge tank" annotation (
-        Dialog(group = "Initialization",enable=SurgeTankType == OpenHPL.Types.SurgeTank.STAirCushion));
-      parameter Modelica.SIunits.Temperature T_ac(displayUnit="degC") = 298.15 "Initial air-cushion temperature"
-        annotation (Dialog(group = "Initialization", enable=SurgeTankType == OpenHPL.Types.SurgeTank.STAirCushion));
-      //possible parameters for temperature variation. Not finished...
-      //parameter Boolean TempUse = data.TempUse "If checked - the water temperature is not constant" annotation (Dialog(group = "Initialization"));
-      //parameter Modelica.SIunits.Temperature T_i = data.T_i "Initial water temperature in the pipe" annotation (Dialog(group = "Initialization", enable = TempUse));
-      //// variables
+      parameter Modelica.SIunits.Height h_0 = 69.9 "Initial water height in the surge tank";
+      parameter Modelica.SIunits.Pressure p_ac = 4*data.p_a "Initial pressure of air-cushion inside the surge tank";
+      parameter Modelica.SIunits.Temperature T_ac(displayUnit="degC") = 298.15 "Initial air-cushion temperature";
       Modelica.SIunits.Mass m "Water mass";
       Modelica.SIunits.Mass m_a = p_ac*A*(L-h_0/cos_theta)*data.M_a/(Modelica.Constants.R*T_ac) "Air mass inside surge tank";
       Modelica.SIunits.Momentum M "Water momuntum";
@@ -402,10 +365,6 @@ package HydroPowerPlant
       // initial values for differential variables
       Modelica.SIunits.Height h(start = h_0) "Water height in the surge tank";
       Modelica.SIunits.VolumeFlowRate Vdot(start = Vdot_0) "Water flow rate";
-      // variables for temperature. Not in use for now...
-      // Real W_f, W_e;
-      // connector (acquisition of algebraic variable, mass flow rate mdot, and node pressure (manifold pressure) p_n)
-      extends OpenHPL.Interfaces.ContactNode;
     initial equation
       if SteadyState then
         der(M) = 0;
@@ -634,25 +593,199 @@ package HydroPowerPlant
         p_o = o.p;
   
     end DraftTube;
+
+    model Pipeline
+      outer Presets data "Using standard data set";
+      import Modelica.Constants.pi;
+      
+      // Geometrical parameters of the pipe
+      parameter Modelica.SIunits.Length H = 25 "Height difference from the inlet to the outlet";
+      parameter Modelica.SIunits.Length L = 6600 "Length of the pipe";
+      parameter Modelica.SIunits.Diameter D_i = 5.8 "Diameter of the inlet side";
+      parameter Modelica.SIunits.Diameter D_o = D_i "Diameter of the outlet side";
+      parameter Modelica.SIunits.Height p_eps = data.p_eps "Pipe roughness height";
+      
+      // Condition of steady state
+      parameter Boolean SteadyState = data.Steady "if true - starts from Steady State";
+      
+      // Steady state value for flow rate
+      parameter Modelica.SIunits.VolumeFlowRate Vdot_0 = data.V_0 "Initial flow rate in the pipe";
+      
+      // Variables
+      Modelica.SIunits.Diameter D_ = 0.5 * (D_i + D_o) "Average diameter";
+      Modelica.SIunits.Mass m "water mass";
+      Modelica.SIunits.Area A_i = D_i ^ 2 * pi / 4 "Inlet cross section area";
+      Modelica.SIunits.Area A_o = D_o ^ 2 * pi / 4 "Outlet cross section area";
+      Modelica.SIunits.Area A_ = D_ ^ 2 * pi / 4 "Average cross section area";
+      Real cos_theta = H / L "slope ratio";
+      Modelica.SIunits.Velocity v "Water velocity";
+      Modelica.SIunits.Force F_f "Friction force";
+      Modelica.SIunits.Momentum M "Water momentum";
+      Modelica.SIunits.Pressure p_i "Inlet pressure";
+      Modelica.SIunits.Pressure p_o "Outlet pressure";
+      Modelica.SIunits.Pressure dp=p_o-p_i "Pressure difference across the pipe";
+      Modelica.SIunits.VolumeFlowRate Vdot(start = Vdot_0) "Flow rate";
+    
+      // Connector
+      extends OpenHPL.Interfaces.ContactPort;
+    initial equation
+      
+      if SteadyState then
+        der(M) = 0;
+      end if;
+      
+    equation
+      
+      // Water volumetric flow rate through the pipe
+      Vdot = mdot / data.rho;
+      
+      // Water velocity
+      v = Vdot / A_;
+      
+      // Momentum and mass of water
+      M = data.rho * L * Vdot;
+      m = data.rho * A_ * L;
+      
+      // Friction force
+      F_f = Functions.DarcyFriction.Friction(v, D_, L, data.rho, data.mu, p_eps);
+      
+      // Momentum balance
+      der(M) = data.rho * Vdot ^ 2 * (1 / A_i - 1 / A_o) + p_i * A_i - p_o * A_o - F_f + m * data.g * cos_theta;
+      
+      // Pipe pressure
+      p_i = i.p;
+      p_o = o.p;
+
+    end Pipeline;
   
   end Watercourse;
 
   package ElectricalInstallations
-  
-    model HydraulicTurbines
-      // parameter Modelica.Mechanics.Rotational.Interfaces.
-      // WaterInput from_penstock;
-      // WaterOutput to_draft_tube;
-    equation
-  
-    end HydraulicTurbines;
-  
-    model Powerhouse
-    equation
-  
-    end Powerhouse;
+
+package HydraulicTurbines
+      extends Modelica.Icons.GearIcon;
+
+      model GeneralTurbine "Simple turbine model with mechanical connectors"
+        outer Presets data "Using standard class with global parameters";
+      
+        parameter Boolean ValveCapacity =  true "If checked the guide vane capacity C_v should be specified, otherwise specify the nominal turbine parameters (net head and flow rate)";
+        
+        parameter Real C_v = 3.7 "Guide vane 'valve capacity'";
+        
+        parameter SI.Height H_n = 460 "Nominal net head";
+        
+        parameter SI.VolumeFlowRate Vdot_n = 23.4 "Nominal flow rate";
+        
+        parameter SI.PerUnit u_n = 0.95 "Nominal guide vane opening";
+        
+        parameter Boolean ConstEfficiency = true "If checked the constant efficiency eta_h is used,
+          otherwise specify lookup table for efficiency";
+        
+        parameter SI.Efficiency eta_h = 0.9 "Turbine hydraulic efficiency";
+        
+        parameter Real lookup_table[:, :] = [0, 0.4; 0.2, 0.7; 0.5, 0.9; 0.95, 0.95; 1.0, 0.93] "Look-up table for the turbine efficiency, described by a table matrix, where the first column is a pu value of the guide vane opening, and the second column is a pu value of the turbine efficiency.";
+        
+        parameter Boolean WaterCompress = false "If checked the water is compressible in the penstock";
+      
+        //extends BaseClasses.Power2Torque(power(y=Wdot_s));
+        
+        //extends OpenHPL.Interfaces.TurbineContacts2;
+      
+        SI.Pressure dp "Turbine pressure drop";
+        SI.EnergyFlowRate Kdot_i_tr "Kinetic energy flow";
+        SI.VolumeFlowRate Vdot "Flow rate";
+        Real C_v_ "Guide vane 'valve capacity'";
+      
+        output SI.EnergyFlowRate Wdot_s "Shaft power";
+        Modelica.Blocks.Tables.CombiTable1D look_up_table(table = lookup_table);
+        Modelica.Blocks.Math.Feedback lossCorrection;
+        
+      equation
+        
+        Vdot = if WaterCompress then mdot / (data.rho * (1 + data.beta * (i.p - data.p_a))) else mdot / data.rho "Checking for water compressibility";
+        
+        look_up_table.u[1] = u_t "Link the guide vane opening";
+        
+        C_v_ = if ValveCapacity then C_v else Vdot_n/sqrt(H_n*data.g*data.rho/data.p_a)/u_n "Define guide vane 'valve capacity' base on the Nominal turbine parameters";
+        
+        dp = Vdot ^ 2 * data.p_a / (C_v_ * u_t) ^ 2 "turbine valve equation for pressure drop";
+        
+        dp = i.p - o.p "Link the pressure drop to the ports";
+        
+        Kdot_i_tr = dp * Vdot "Turbine energy balance";
+        
+        if ConstEfficiency then
+          Wdot_s = eta_h * Kdot_i_tr;
+        else
+          Wdot_s = look_up_table.y[1] * Kdot_i_tr;
+        end if;
+      
+      
+        connect(P_out, lossCorrection.y);
+        connect(lossCorrection.u1, power.y);
+        connect(frictionLoss.power, lossCorrection.u2);
+
+      end GeneralTurbine;
+
+end HydraulicTurbines;
+
+    package PowerHouse 
+package Generators
+      end Generators;
+
+      package Controllers
+      end Controllers;
+    end PowerHouse;
   
   end ElectricalInstallations;
+
+  package WorkingModels
+    extends Modelica.Icons.ExamplesPackage;
+  
+    model BasicExample "Basic model of a Hydropower plant."
+      extends Modelica.Icons.Example;
+      
+      HydroPowerPlant.WaterSources.Reservoir Reservoir(H_0 = 48);
+      
+      Modelica.Blocks.Sources.Ramp Control(duration = 1, height = -0.04615, offset = 0.7493, startTime = 600);
+      
+      HydroPowerPlant.WaterSources.Pipeline IntakeStructure(H = 23);
+      
+      HydroPowerPlant.WaterSources.Pipeline Discharge(H = 0.5, L = 600);
+      
+      HydroPowerPlant.WaterSources.Reservoir Tailrace(H_0 = 5);
+      
+      HydroPowerPlant.WaterSources.Pipeline Penstock(
+        D_i = 3,
+        D_o = 3,
+        H = 428.5,
+        L = 600,
+        vertical = true);
+      
+      HydroPowerPlant.WaterSources.SurgeChamber SurgeChamber(h_0 = 69.9);
+      
+      HydroPowerPlant.ElectricalInstallations.HydraulicTurbines.GeneralTurbine Turbine(C_v = 3.7, ConstEfficiency = false, enable_nomSpeed = true);
+      
+      inner HydroPowerPlant.Presets data;
+    
+    equation
+    
+      connect(Turbine.o, Discharge.i);
+      
+      connect(Control.y, Turbine.u_t);
+      
+      connect(Penstock.o, Turbine.i);
+      
+      connect(Reservoir.o, IntakeStructure.i);
+      
+      connect(IntakeStructure.o, SurgeChamber.i);
+      
+      connect(SurgeChamber.o, Penstock.i);
+      
+      connect(Discharge.o, Tailrace.o);
+    
+    end BasicExample;
+  end WorkingModels;
   annotation(
     version="0.9.0",
     versionDate="17/04/2022",
