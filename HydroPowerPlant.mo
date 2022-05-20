@@ -17,8 +17,10 @@ package HydroPowerPlant
     package IWater
     
       connector WaterConnector
+      
         Modelica.SIunits.Pressure p "Contact pressure";
-        flow Modelica.SIunits.MassFlowRate m_dot "Mass flow rate through the contact";
+        flow Modelica.SIunits.MassFlowRate mdot "Mass flow rate through the contact";
+      
       end WaterConnector;
     
       connector WaterInput "Input connector"
@@ -68,9 +70,9 @@ package HydroPowerPlant
     package ITurbine 
 partial model TurbineConnector
   
-  extends IWater.TwoPortWaterConnector;
+  extends IWater.MeticulousTwoPortWaterConnector;
   
-  input Modelica.Blocks.Interfaces.RealInput u_t "[Guide vane|nozzle] opening of the turbine";
+  input Modelica.Blocks.Interfaces.RealInput u_t "Guide vane/nozzle opening of the turbine";
   
   Modelica.Blocks.Interfaces.RealOutput P_out(unit = "W") "Output mechanical power";
 
@@ -78,9 +80,10 @@ end TurbineConnector;
 
       partial model SmartTurbineConnector
       
-        extends IWater.TwoPortWaterConnector;
+        extends IWater.MeticulousTwoPortWaterConnector;
         
-        parameter Boolean include_P_out = false "If checked, get a connector for the output power";
+        parameter Boolean include_P_out = false "If checked, get a connector for the output power"
+        annotation (choices(checkBox = true), Dialog(group="Outputs"));
         
         input Modelica.Blocks.Interfaces.RealInput u_t "[Guide vane|nozzle] opening of the turbine";
         
@@ -179,7 +182,11 @@ end TurbineConnector;
     parameter Modelica.SIunits.Compressibility beta_total = 1 / rho / 1000 ^ 2 "Total compressibility";
     parameter Modelica.SIunits.VolumeFlowRate V_0 = 21.000 "Initial flow rate through the system";
     parameter Modelica.SIunits.Frequency f_0 = 50 "Initial frequency for TorqueGenerator";
-  
+    parameter Modelica.SIunits.MolarMass M_a = 28.97e-3 "Molar mass of air at standard temperature and pressure";
+    parameter Boolean Steady = false "If checked, simulation starts from Steady State"
+      annotation (choices(checkBox = true), Dialog(group = "Initialization"));
+    parameter Modelica.SIunits.Height p_eps = 5e-2 "Pipe roughness height";
+    
   end Presets;
 
   package WaterSources
@@ -306,7 +313,7 @@ end TurbineConnector;
       
       end if;
       
-      o.mdot = -data.rho * Vdot_o                        "Output flow connector";
+      w_o.mdot = -data.rho * Vdot_o                        "Output flow connector";
     
     end Reservoir;
   end WaterSources;
@@ -465,7 +472,7 @@ end TurbineConnector;
       mdot = data.rho * Vdot;
       Mdot = mdot * v;
       F = F_p - F_f - F_g;
-      p_b = p_n "Linking bottom node pressure to connector";
+      p_b = p "Linking bottom node pressure to connector";
       F_g = m * data.g * cos_theta;
     
     end SurgeChamber;
@@ -650,7 +657,7 @@ end TurbineConnector;
       M = data.rho * L * Vdot;            // Momentum and mass of water
       m = data.rho * A_ * L;
 
-      F_f = Functions.DarcyFriction.Friction(v, D_, L, data.rho, data.mu, p_eps);                                 // Friction force
+      F_f = Utilities.Darcy_Weisbach.DarcyFrictionFactor(v, D_, L, data.rho, data.mu, p_eps);                                 // Friction force
     
       der(M) = data.rho * Vdot ^ 2 * (1 / A_i - 1 / A_o) + p_i * A_i - p_o * A_o - F_f + m * data.g * cos_theta;  // Momentum balance
 
@@ -686,14 +693,15 @@ end TurbineConnector;
         Modelica.SIunits.EnergyFlowRate Kdot_i_tr "Kinetic energy flow";
         Modelica.SIunits.VolumeFlowRate Vdot "Flow rate";
         Real C_v_ "Guide vane 'valve capacity'";
+        
         output Modelica.SIunits.EnergyFlowRate Wdot_s "Shaft power";
         Modelica.Blocks.Tables.CombiTable1D look_up_table(table = lookup_table);
         Modelica.Blocks.Math.Feedback lossCorrection;
       
       equation
-       
-        Vdot = if WaterCompress then m_dot / (data.rho * (1 + data.beta * (i.p - data.p_a))) else m_dot / data.rho "Checking for water compressibility";
-        
+      
+        Vdot = if WaterCompress then mdot / (data.rho * (1 + data.beta * (i.p - data.p_a))) else mdot / data.rho "Checking for water compressibility";
+      
         look_up_table.u[1] = u_t "Link the guide vane opening";
         
         C_v_ = if ValveCapacity then C_v else Vdot_n / sqrt(H_n * data.g * data.rho / data.p_a) / u_n "Define guide vane 'valve capacity' base on the Nominal turbine parameters";
@@ -881,10 +889,10 @@ end TurbineConnector;
       connect(Turbine.o, Discharge.i);
       connect(Control.y, Turbine.u_t);
       connect(Penstock.o, Turbine.i);
-      connect(Reservoir.o, IntakeStructure.i);
+      connect(Reservoir.w_o, IntakeStructure.i);
       connect(IntakeStructure.o, SurgeChamber.i);
       connect(SurgeChamber.o, Penstock.i);
-      connect(Discharge.o, Tailrace.o);
+      connect(Discharge.o, Tailrace.w_o);
     
     end BasicExample;
   end WorkingModels;
